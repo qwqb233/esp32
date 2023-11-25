@@ -2,7 +2,7 @@
  * @Author: qwqb233 3087820261@qq.com
  * @Date: 2023-10-15 10:46:20
  * @LastEditors: qwqb233 3087820261@qq.com
- * @LastEditTime: 2023-11-25 15:49:37
+ * @LastEditTime: 2023-11-25 16:33:17
  * @FilePath: \esp32c:\Users\qwqb233\Documents\PlatformIO\Projects\test_WiFi\src\Hardware\TFT.cpp
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -21,7 +21,7 @@ void TFTInit()
     
     TFT_timer = timerBegin(1,80,true);
     timerAttachInterrupt(TFT_timer,&TFT_OnTime,true);
-    timerAlarmWrite(TFT_timer,100,true);
+    timerAlarmWrite(TFT_timer,100/2,true);
     timerAlarmEnable(TFT_timer);
 
     pinMode(CSPin, OUTPUT);
@@ -109,17 +109,22 @@ void TFT_OnTime()
 {
     static int cout = 0;
     static int sendStatus = 0;
-    if(!sendStatus)
+    if(TFT_DataLoad)
     {
-        SDA_Write(TFT_Data[cout],cout++);
-        SCL_Write(1);
-        sendStatus != sendStatus;
-    }
-    else
-    {
-        SDA_Write(0,0);
-        SCL_Write(0);
-        sendStatus != sendStatus;
+        switch (sendStatus)
+        {
+        case 0:
+            SDA_Write(TFT_Data[cout],cout++);
+            SCL_Write(1);
+            sendStatus += 1;
+            break;
+        case 1:
+            SDA_Write(0,0);
+            SCL_Write(0);
+            sendStatus == 0;
+            break;
+        }
+        if(cout >= (128*160)){TFT_DataSended = true;cout = 0;}
     }
 }
 

@@ -18,6 +18,8 @@
 #define RESSet(x) digitalWrite(RESPin,(x))
 
 int *TFT_Data = NULL;
+bool TFT_DataLoad = false;
+bool TFT_DataSended = false;
 
 hw_timer_t *TFT_timer = NULL;
 
